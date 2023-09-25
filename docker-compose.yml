@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  wallet_db:
+    image: postgres:latest
+    container_name: wallet_db
+    restart: unless-stopped
+    env_file: apps/wallet/.env
+    ports:
+      - 5435:5432
+    volumes:
+      - wallet_pgdata:/var/lib/postgresql/data
+
+  game-engine_db:
+    image: postgres:latest
+    container_name: game-engine_db
+    restart: unless-stopped
+    env_file: apps/game-engine/.env
+    ports:
+      - 5436:5432
+    volumes:
+      - game-engine_pgdata:/var/lib/postgresql/data
+
+volumes:
+  wallet_pgdata:
+  game-engine_pgdata:

@@ -14,7 +14,13 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@game-engine/*": ["apps/game-engine/*"],
+      "@wallet/*": ["apps/wallet/*"],
+      "@libs/*": [
+        "libs/*"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
