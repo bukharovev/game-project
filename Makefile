@@ -1,9 +1,9 @@
 setup:
 	yarn install
+	docker-compose up -d
 	nx run game-engine:migration:run
 	nx run wallet:migration:run
 	nx run wallet:seed
-	docker-compose up -d
 
 start-both:
 	nx run-many --target=serve --projects=game-engine,wallet
