@@ -1,6 +1,6 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
-import { TypeormNamingStrategy } from '@libs/helpers/typeorm-naming.strategy';
+import { TypeormNamingStrategy } from '../../libs/helpers/typeorm-naming.strategy';
 
 const getEnvironmentVariable = (variableName: string) => {
   return process.env[variableName];

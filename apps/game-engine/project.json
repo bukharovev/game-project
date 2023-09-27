@@ -24,14 +24,14 @@
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "game:build"
+        "buildTarget": "game-engine:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "game:build:development"
+          "buildTarget": "game-engine:build:development"
         },
         "production": {
-          "buildTarget": "game:build:production"
+          "buildTarget": "game-engine:build:production"
         }
       }
     },

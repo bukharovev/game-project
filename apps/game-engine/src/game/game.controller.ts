@@ -3,7 +3,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { GameService } from './game.service';
 import { MakeBetDto } from './dto/make-bet.dto';
 
-@Controller('games')
+@Controller()
 export class GameController {
   constructor(private readonly gameService: GameService) {}
 

@@ -1,6 +1,7 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { TypeormNamingStrategy } from '@libs/helpers/typeorm-naming.strategy';
+import { TypeormNamingStrategy } from '../../libs/helpers/typeorm-naming.strategy';
 import { SeederOptions } from 'typeorm-extension';
+import { WalletSeeder } from './src/wallet/wallet.seed';
 
 const getEnvironmentVariable = (variableName: string) => {
   return process.env[variableName];
@@ -17,6 +18,7 @@ const options: DataSourceOptions & SeederOptions = {
   namingStrategy: new TypeormNamingStrategy(),
   migrationsTableName: 'typeorm_migrations',
   migrations: ['apps/wallet/src/migrations/*.{ts,js}'],
+  seeds: [WalletSeeder],
 };
 
 export const connectionSource: DataSource = new DataSource(options);

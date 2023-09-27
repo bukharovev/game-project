@@ -85,6 +85,14 @@
       "options": {
         "command": "ts-node --project=apps/wallet/tsconfig.app.json ./node_modules/typeorm/cli migration:show --dataSource apps/wallet/ormconfig.ts"
       }
+    },
+
+    "seed": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "ts-node --project=apps/wallet/tsconfig.app.json ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d apps/wallet/ormconfig.ts"
+      }
     }
   },
   "tags": []

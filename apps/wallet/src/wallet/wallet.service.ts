@@ -1,39 +1,31 @@
-import { InjectRepository } from '@nestjs/typeorm';
 import { Wallet } from './entities/wallet.entity';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
-import { IMakeTransaction, IMakeTransactionResponse, SUCCESS, FAILURE } from '@libs/interfaces/make-transaction.interface';
+import {
+  IMakeTransactionResponse,
+  SUCCESS,
+  FAILURE,
+} from '@libs/interfaces/make-transaction.interface';
 import { assert } from '@libs/helpers/assert';
 import { WalletNotFound } from './errors/wallet-not-found.error';
-import { Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { MakeTransactionDto } from './dto/make-transaction.dto';
+import { SYSTEM_WALLET_ID } from './wallet.seed';
+import { InsufficientFunds } from './errors/insufficient-funds.error';
 
-const SYSTEM_WALLET_ID = 'eef09c32-5095-43bb-b6ff-d138ee5a3770';
-
+@Injectable()
 export class WalletService {
-  constructor(
-    // @InjectRepository(Wallet)
-    // private readonly walletsRepository: Repository<Wallet>,
-    // @InjectRepository(Transaction)
-    // private readonly transactionsRepository: Repository<Transaction>,
-    private readonly dataSource: DataSource
-  ) {}
+  constructor(private readonly dataSource: DataSource) {}
 
   async popUp(dto: MakeTransactionDto): Promise<IMakeTransactionResponse> {
-    const { walletId, amount } = dto;
-    // const wallet = await this.walletsRepository.findOneBy({ id: walletId });
-    // assert(wallet, WalletNotFound);
-
     try {
+      const { walletId, amount } = dto;
       await this.dataSource.transaction(
         async (entityManager: EntityManager) => {
-          const wallet = await entityManager
-            .getRepository(Wallet)
-            .createQueryBuilder('wallets')
-            .setLock('pessimistic_write')
-            .where('wallets.id = :walletId ', { walletId })
-            .getOne()
-
+          const wallet = await this.getWalletByIdAndLock(
+            walletId,
+            entityManager
+          );
           assert(wallet, WalletNotFound);
 
           await entityManager
@@ -42,6 +34,7 @@ export class WalletService {
             .update({
               balance: wallet.balance + amount,
             })
+            .where('wallets.id = :walletId', { walletId })
             .execute();
 
           const txData = entityManager.getRepository(Transaction).create({
@@ -56,27 +49,22 @@ export class WalletService {
 
       return { status: SUCCESS };
     } catch (error) {
-      Logger.error(`WalletService::popUp::${error}`);
+      console.dir({ 'WalletService::popUp': error }, { depth: null });
       return { status: FAILURE };
     }
   }
 
   async withdrawal(dto: MakeTransactionDto): Promise<IMakeTransactionResponse> {
-    const { walletId, amount } = dto;
-    // const wallet = await this.walletsRepository.findOneBy({ id: walletId });
-    // assert(wallet, WalletNotFound);
-
     try {
+      const { walletId, amount } = dto;
       await this.dataSource.transaction(
         async (entityManager: EntityManager) => {
-          const wallet = await entityManager
-            .getRepository(Wallet)
-            .createQueryBuilder('wallets')
-            .setLock('pessimistic_write')
-            .where('wallets.id = :walletId ', { walletId })
-            .getOne()
-
+          const wallet = await this.getWalletByIdAndLock(
+            walletId,
+            entityManager
+          );
           assert(wallet, WalletNotFound);
+          assert(wallet.balance >= amount, InsufficientFunds);
 
           await entityManager
             .getRepository(Wallet)
@@ -84,6 +72,7 @@ export class WalletService {
             .update({
               balance: wallet.balance - amount,
             })
+            .where('wallets.id = :walletId', { walletId })
             .execute();
 
           const txData = entityManager.getRepository(Transaction).create({
@@ -98,8 +87,21 @@ export class WalletService {
 
       return { status: SUCCESS };
     } catch (error) {
-      Logger.error(`WalletService::withdrawal::${error}`);
+      console.dir({ 'WalletService::withdrawal': error }, { depth: null });
       return { status: FAILURE };
     }
   }
+
+  private async getWalletByIdAndLock(
+    walletId: string,
+    entityManager: EntityManager
+  ) {
+    return await entityManager
+      .getRepository(Wallet)
+      .createQueryBuilder('wallets')
+      .setLock('pessimistic_write')
+      .where('wallets.id = :walletId ', { walletId })
+      .getOne();
+  }
 }
+  

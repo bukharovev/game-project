@@ -17,15 +17,15 @@ export class Game {
   @Column()
   status: string;
 
-  // @Column({ nullable: true })
-  // winnerWalletId?: string;
-
-  @CreateDateColumn()
+  @Column({ type: 'timestamp' })
   startedAt: Date;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   scoringStartedAt?: Date;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   endedAt?: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  failedAt?: Date;
 }

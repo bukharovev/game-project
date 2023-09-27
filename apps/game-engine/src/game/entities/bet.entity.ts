@@ -1,6 +1,5 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -20,6 +19,10 @@ export class Bet {
 
   @Column() // it could be { type: 'money' }
   amount: number;
+
+  // in_process -> accepted
+  // in_process -> not_accepted
+  // accepted -> funds_returned
 
   @Column()
   status: string;

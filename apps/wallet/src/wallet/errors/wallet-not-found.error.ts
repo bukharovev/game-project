@@ -1,6 +1,6 @@
 export class WalletNotFound {
   baseType: string;
-  domainType?: string;
+  domainType: string;
   
   constructor() {
     this.baseType = 'NOT_FOUND'

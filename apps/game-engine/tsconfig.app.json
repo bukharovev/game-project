@@ -6,12 +6,6 @@
     "types": ["node"],
     "emitDecoratorMetadata": true,
     "target": "es2021",
-    "paths": {
-      "@game-engine/*": ["apps/game-engine/*"],
-      "@libs/*": [
-        "libs/*"
-      ]
-    }
   },
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
   "include": ["src/**/*.ts", "ormconfig.ts", "src/migrations"]

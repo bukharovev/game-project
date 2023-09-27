@@ -16,10 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@game-engine/*": ["apps/game-engine/*"],
-      "@wallet/*": ["apps/wallet/*"],
-      "@libs/*": [
-        "libs/*"
-      ]
+      "@libs/*": ["libs/*"],
+      "@wallet/*": ["apps/wallet/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]
